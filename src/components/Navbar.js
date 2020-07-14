@@ -7,6 +7,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import '../style.css'
 import { withStyles } from '@material-ui/core/styles';
+import SearchBar from './SearchBar';
 
 
 
@@ -31,19 +32,24 @@ class Navbar extends Component {
     const { classes } = this.props;
     return (
       <AppBar color='transparent' position="sticky" style={{ boxShadow: 'none' }}>
-        <Grid container justify='space-between' style={{ padding: '30px 150px' }} alignItems='center'>
-          <Grid item xs={2}>
-            <img src={logoText} alt='logo' height={32} />
-          </Grid>
-          <Grid item xs={2} style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', cursor: 'pointer' }}>
-            <div onClick={(e) => this.setState({ anchorEl1: e.currentTarget })} style={{ display: 'flex', alignItems: 'center', paddingRight: 10 }}>
-              <LanguageIcon style={{ color: '#484848' }} />
-              <ArrowDropDownIcon style={{ color: '#484848' }} />
-            </div>
-            <div onClick={(e) => this.setState({ anchorEl2: e.currentTarget })} className='menuHover' style={{ display: 'flex', alignItems: 'center', border: '0.2px solid lightgrey', padding: 5, borderRadius: 30, cursor: 'pointer' }}>
-              <MenuIcon style={{ padding: 5, color: '#484848' }} />
-              <AccountCircleIcon fontSize='large' style={{ color: '#484848' }} />
-            </div>
+        <Grid container justify='center'>
+          <Grid item xs={10}>
+            <Grid container justify='space-between' style={{ padding: '30px 0px' }} alignItems='center'>
+              <Grid item xs={2}>
+                <img src={logoText} alt='logo' height={32} />
+              </Grid>
+              <Grid item xs={2} style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', cursor: 'pointer' }}>
+                <div onClick={(e) => this.setState({ anchorEl1: e.currentTarget })} style={{ display: 'flex', alignItems: 'center', paddingRight: 10 }}>
+                  <LanguageIcon style={{ color: '#484848' }} />
+                  <ArrowDropDownIcon style={{ color: '#484848' }} />
+                </div>
+                <div onClick={(e) => this.setState({ anchorEl2: e.currentTarget })} className='menuHover' style={{ display: 'flex', alignItems: 'center', border: '0.2px solid lightgrey', padding: 5, borderRadius: 30, cursor: 'pointer' }}>
+                  <MenuIcon style={{ padding: 5, color: '#484848' }} />
+                  <AccountCircleIcon fontSize='large' style={{ color: '#484848' }} />
+                </div>
+              </Grid>
+            </Grid>
+            <SearchBar />
           </Grid>
         </Grid>
         <Menu
@@ -98,7 +104,7 @@ class Navbar extends Component {
           }}
         >
           <MenuItem onClick={() => this.setState({ anchorEl2: null })} style={{ display: 'flex', alignItems: 'center' }}>
-            <Typography variant='subtitle2' style={{fontWeight : 600}}>Sign up</Typography>
+            <Typography variant='subtitle2' style={{ fontWeight: 600 }}>Sign up</Typography>
           </MenuItem>
           <MenuItem onClick={() => this.setState({ anchorEl2: null })}>
             <Typography variant='subtitle2'>Log in</Typography>

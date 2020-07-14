@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BottomNavigation, BottomNavigationAction, Typography, AppBar } from '@material-ui/core';
+import { BottomNavigation, BottomNavigationAction, AppBar } from '@material-ui/core';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined';
 import logo from '../assets/logoGrey.png'
