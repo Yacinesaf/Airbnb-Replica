@@ -1,0 +1,7 @@
+.menuHover {
+  transition: 0.3s ease-in-out;
+}
+
+.menuHover:hover {
+  box-shadow: 0 7px 14px rgba(0,0,0,0.10), 0 3px 5px rgba(0,0,0,0.10);
+}
