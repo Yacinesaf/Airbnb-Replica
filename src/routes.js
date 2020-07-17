@@ -7,12 +7,13 @@ import NavbarMobile from './components/NavbarMobile';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 
+
 const themee = createMuiTheme({
   palette: {
     primary : {
       main : '#FF385C'
     }
-  }
+  },
 });
 
 

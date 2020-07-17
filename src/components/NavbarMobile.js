@@ -3,6 +3,7 @@ import { BottomNavigation, BottomNavigationAction, AppBar } from '@material-ui/c
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined';
 import logo from '../assets/logoGrey.png'
+import logoColored from '../assets/logo.png'
 
 
 
@@ -25,7 +26,7 @@ class NavbarMobile extends Component {
           }}
           showLabels
         >
-          <BottomNavigationAction label="Explore" icon={<img src={logo} alt='logo' style={{height : 20, width : 20, paddingBottom : 7, paddingTop : 2}} />} />
+          <BottomNavigationAction label="Explore" icon={<img src={this.state.value === 0 ? logoColored : logo} alt='logo' style={{height : 20, width : 20, paddingBottom : 7, paddingTop : 2}} />} />
           <BottomNavigationAction label="Saved" icon={<FavoriteBorderOutlinedIcon style={{height : 24, width : 24, paddingBottom : 5}} />} />
           <BottomNavigationAction label="Log in" icon={<AccountCircleOutlinedIcon style={{height : 24, width : 24, paddingBottom : 5}} />} />
         </BottomNavigation>
