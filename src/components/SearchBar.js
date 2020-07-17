@@ -14,9 +14,8 @@ export default class SearchBar extends Component {
     this.state = {
       value: 0,
       inputClicked: false,
-      checkinDate: null,
-      checkoutDate: null,
-
+      checkinDate: new Date(),
+      checkoutDate: new Date(),
     }
   }
 
@@ -24,11 +23,13 @@ export default class SearchBar extends Component {
     this.setState({ value: newValue });
   };
 
-  checkinDate = () => {
-    this.refs.checkin.openDialog()
-  }
+  checkinDateChange = (date) => {
+    this.setState({ checkinDate: date })
+  };
 
-
+  checkoutDateChange = (date) => {
+    this.setState({ checkoutDate: date })
+  };
 
   render() {
     return (
@@ -39,7 +40,7 @@ export default class SearchBar extends Component {
           <Tab style={{ textTransform: 'none', minWidth: 'initial' }} label="Online experiences" />
         </Tabs>
         <Grid container alignItems='center' style={{ borderRadius: 10, border: '1px solid lightgrey', marginTop: 20 }}>
-          <Grid item xs={4} onClick={() => this.setState({ inputClicked: true })} style={{ display: 'flex', alignItems: 'center', padding: '0px 10px', height: '100%' }}>
+          <Grid item xs={4} onClick={() => this.setState({ inputClicked: true })} style={{ display: 'flex', alignItems: 'center', padding: '0px 15px', height: 70 }}>
             <div style={{ flexGrow: 1 }}>
               <Typography variant='caption' style={{ fontWeight: 700 }}>LOCATION</Typography>
               <InputBase
@@ -55,14 +56,43 @@ export default class SearchBar extends Component {
           </Grid>
           <Divider orientation='vertical' style={{ height: 70 }} />
           <Grid item xs={2} style={{ paddingLeft: 10 }}>
-            <Typography variant='caption' style={{ fontWeight: 700 }}>CHEK IN</Typography>
-            <Typography style={{ fontWeight: 300, color: 'lightgrey', fontSize: 12, paddingTop: 5 }}>{this.state.checkinDate ? this.state.checkinDate : 'Add dates'}</Typography>
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <KeyboardDatePicker
+                margin="normal"
+                InputProps={{ disableUnderline: true, readOnly: true }}
+                id="check in date picker"
+                label="CHECK IN"
+                InputLabelProps={{
+                  style: { fontWeight: 600, color: 'black' }
+                }}
+                format="dd/MM/yyyy"
+                value={this.state.checkinDate}
+                onChange={this.checkinDateChange}
+                KeyboardButtonProps={{
+                  'aria-label': 'change date',
+                }}
+              />
+            </MuiPickersUtilsProvider>
           </Grid>
           <Divider orientation='vertical' style={{ height: 70 }} />
           <Grid item xs={2} style={{ paddingLeft: 10 }}>
-            <Typography variant='caption' style={{ fontWeight: 700 }}>CHEK OUT</Typography>
-            <Typography style={{ fontWeight: 300, color: 'lightgrey', fontSize: 12, paddingTop: 5 }}>{this.state.checkoutDate ? this.state.checkoutDate : 'Add dates'}</Typography>
-          </Grid>
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <KeyboardDatePicker
+                margin="normal"
+                InputProps={{ disableUnderline: true, readOnly: true }}
+                id="check out date picker"
+                label="CHECK OUT"
+                InputLabelProps={{
+                  style: { fontWeight: 600, color: 'black' }
+                }}
+                format="dd/MM/yyyy"
+                value={this.state.checkoutDate}
+                onChange={this.checkoutDateChange}
+                KeyboardButtonProps={{
+                  'aria-label': 'change date',
+                }}
+              />
+            </MuiPickersUtilsProvider>          </Grid>
           <Divider orientation='vertical' style={{ height: 70 }} />
           <Grid item xs={3} style={{ paddingLeft: 10, display: 'flex', flexGrow: 1 }}>
             <div>
@@ -75,18 +105,6 @@ export default class SearchBar extends Component {
           Search
         </div>
         </Grid>
-        <MuiPickersUtilsProvider ref='checkin' utils={DateFnsUtils}>
-          <KeyboardDatePicker
-            margin="normal"
-            id="date-picker-dialog"
-            label="Date picker dialog"
-            format="MM/dd/yyyy"
-            onChange={(e) => this.setState({ checkinDate: `${e.getDate()}/${e.getMonth() + 1}/${e.getFullYear()}` })}
-            KeyboardButtonProps={{
-              'aria-label': 'change date',
-            }}
-          />
-        </MuiPickersUtilsProvider>
       </div>
     )
   }

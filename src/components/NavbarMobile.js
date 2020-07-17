@@ -25,7 +25,7 @@ class NavbarMobile extends Component {
           }}
           showLabels
         >
-          <BottomNavigationAction label="Explore" icon={<img src={logo} alt='logo' style={{height : 20, width : 20, paddingBottom : 8}} />} />
+          <BottomNavigationAction label="Explore" icon={<img src={logo} alt='logo' style={{height : 20, width : 20, paddingBottom : 7, paddingTop : 2}} />} />
           <BottomNavigationAction label="Saved" icon={<FavoriteBorderOutlinedIcon style={{height : 24, width : 24, paddingBottom : 5}} />} />
           <BottomNavigationAction label="Log in" icon={<AccountCircleOutlinedIcon style={{height : 24, width : 24, paddingBottom : 5}} />} />
         </BottomNavigation>

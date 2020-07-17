@@ -11,14 +11,6 @@ import SearchBar from './SearchBar';
 
 
 
-const styles = theme => ({
-  root: {
-    borderRadius: 15,
-    padding: 10,
-  },
-});
-
-
 class Navbar extends Component {
   constructor() {
     super()
@@ -29,7 +21,6 @@ class Navbar extends Component {
   }
 
   render() {
-    const { classes } = this.props;
     return (
       <AppBar color='transparent' position="sticky" style={{ boxShadow: 'none' }}>
         <Grid container justify='center'>
@@ -126,4 +117,4 @@ class Navbar extends Component {
 }
 
 
-export default withStyles(styles)(Navbar);
+export default Navbar;
