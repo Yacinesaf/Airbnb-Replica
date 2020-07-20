@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Grid, Tabs, Tab, Typography, InputBase, Divider, Dialog, IconButton } from '@material-ui/core'
+import { Grid, Tabs, Tab, Typography, InputBase, Divider, Dialog, IconButton, Button, CircularProgress } from '@material-ui/core'
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
 import SearchIcon from '@material-ui/icons/Search';
 import DateFnsUtils from '@date-io/date-fns';
@@ -9,6 +9,10 @@ import {
 } from '@material-ui/pickers';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import { getLocations } from '../services/apiEndpoints'
+import RoomIcon from '@material-ui/icons/Room';
+
 
 
 export default class SearchBar extends Component {
@@ -24,6 +28,9 @@ export default class SearchBar extends Component {
       childrenNum: 0,
       infantsNum: 0,
       guestsAddition: null,
+      options: [],
+      openAutocomplete: false,
+      loading: true
     }
   }
 
@@ -90,18 +97,59 @@ export default class SearchBar extends Component {
           <Tab style={{ textTransform: 'none', minWidth: 'initial' }} label="Experiences" />
           <Tab style={{ textTransform: 'none', minWidth: 'initial' }} label="Online experiences" />
         </Tabs>
-        <Grid container alignItems='center' style={{ borderRadius: 10, border: '1px solid lightgrey', marginTop: 20, }}>
-          <Grid item xs={4} onClick={() => this.setState({ inputClicked: true })} style={{ display: 'flex', alignItems: 'center', padding: '0px 15px', height: 70 }}>
+        <Grid container alignItems='center' style={{ borderRadius: 10, border: '1px solid lightgrey', marginTop: 20, padding: '0px 10px' }}>
+          <Grid item xs={4} onClick={() => this.setState({ inputClicked: true })} style={{ position: 'relative', display: 'flex', alignItems: 'center', height: 70 }}>
             <div style={{ flexGrow: 1 }}>
               <Typography variant='caption' style={{ fontWeight: 700 }}>LOCATION</Typography>
-              <InputBase
-                onChange={(e) => {
-                  this.setState({ search: e.target.value });
-                }}
-                onKeyPress={this.handleKeyPress}
-                style={{ width: '90%', padding: '0px !important' }}
-                inputProps={{ placeholder: 'Where are you going?', type: 'text' }}
-              />
+              <div>
+                <Autocomplete
+                  id='autocomplete'
+                  open={this.state.openAutocomplete}
+                  options={this.state.options}
+                  loading={this.state.loading}
+                  onOpen={() => {
+                    this.setState({ openAutocomplete: true })
+                  }}
+                  onClose={() => {
+                    this.setState({ openAutocomplete: false })
+                  }}
+                  renderInput={(params) => (
+                    <InputBase
+                      {...params}
+                      onChange={(e) => {
+                        getLocations(e.target.value).then(res => {
+                          if (e.target.value.length) {
+                            this.setState({ options: res })
+                          } else {
+                            this.setState({ options: [] })
+                          }
+                        })
+                      }}
+                      onKeyPress={this.handleKeyPress}
+                      style={{ width: '90%', padding: '0px !important' }}
+                      inputProps={{ placeholder: 'Where are you going?', type: 'text' }}
+                      label="Asynchronous"
+                      InputProps={{
+                        ...params.InputProps,
+                        endAdornment: (
+                          <React.Fragment>
+                            {this.state.loading ? <CircularProgress color="inherit" size={20} /> : null}
+                            {params.InputProps.endAdornment}
+                          </React.Fragment>
+                        ),
+                      }}
+                    />
+                  )}
+                />
+                <div style={{ position: 'absolute', borderRadius: 10, backgroundColor: 'white', boxShadow: ' 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)', width: '-webkit-fill-available', padding: this.state.options.length ? '10px 20px' : 0 }}>
+                  {this.state.options ? this.state.options.map(x => (
+                    <div style={{ display: 'flex', alignItems: 'center', color: 'grey' }}>
+                      <RoomIcon fontSize='large' color='inherit' style={{ paddingRight: 20 }} />
+                      <p>{x}</p>
+                    </div>
+                  )) : null}
+                </div>
+              </div>
             </div>
             {this.state.inputClicked ? <CloseOutlinedIcon fontSize='small' /> : null}
           </Grid>
@@ -148,77 +196,75 @@ export default class SearchBar extends Component {
             </MuiPickersUtilsProvider>
           </Grid>
           <Divider orientation='vertical' style={{ height: 70 }} />
-          <Grid onClick={this.openDialog} item xs={3} style={{ paddingLeft: 10, flexGrow: 1, height: 70, alignItems: 'center', display: 'flex' }}>
-            <div>
-              <Typography variant='caption' style={{ fontWeight: 700 }}>GUESTS</Typography>
-              <Typography style={{ fontWeight: 300, color: 'lightgrey', fontSize: 12, paddingTop: 5 }}>{this.state.guestsAddition ? this.state.guestsAddition : 'Add guests'}</Typography>
-              <Dialog onBackdropClick={() => { this.resetGuests(); this.closeDialog() }} onEscapeKeyDown={() => { this.resetGuests(); this.closeDialog() }} open={this.state.isDialogOpen} onClose={this.closeDialog}>
-                <Grid container justify='center' alignItems='center' style={{ maxWidth: 310 }}>
-                  <Grid xs={12} item style={{ minHeight: 100, backgroundColor: '#FF385C' }} >
-                    <Typography variant='h4' style={{ color: 'white', paddingLeft: 30, paddingTop: 30 }}>Guests</Typography>
-                  </Grid>
-                  <Grid item xs={10} style={{ display: 'flex', alignItems: 'center', padding: '10px 0px', justifyContent: 'space-between', marginTop: 10 }}>
-                    <div>
-                      <Typography>Adults</Typography>
-                      <Typography variant='subtitle2' style={{ fontWeight: 400, color: 'grey' }}>Ages 13 or above</Typography>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <IconButton onClick={this.removeAdults} disabled={!this.state.adultsNum > 0} style={{ padding: 0 }}>
-                        <RemoveCircleOutlineIcon fontSize='large' />
-                      </IconButton>
-                      <Typography style={{ padding: '0px 10px' }}>{this.state.adultsNum}</Typography>
-                      <IconButton onClick={this.addAdults} style={{ padding: 0 }}>
-                        <AddCircleOutlineIcon fontSize='large' />
-                      </IconButton>
-                    </div>
-                  </Grid>
-                  <Divider />
-                  <Grid item xs={10} style={{ display: 'flex', alignItems: 'center', padding: '10px 0px', justifyContent: 'space-between' }}>
-                    <div>
-                      <Typography>Children</Typography>
-                      <Typography variant='subtitle2' style={{ fontWeight: 400, color: 'grey' }}>Ages 2-12</Typography>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <IconButton onClick={this.removeChildren} disabled={!this.state.childrenNum > 0} style={{ padding: 0 }}>
-                        <RemoveCircleOutlineIcon fontSize='large' />
-                      </IconButton>
-                      <Typography style={{ padding: '0px 10px' }}>{this.state.childrenNum}</Typography>
-                      <IconButton onClick={this.addChildren} style={{ padding: 0 }}>
-                        <AddCircleOutlineIcon fontSize='large' />
-                      </IconButton>
-                    </div>
-                  </Grid>
-                  <Divider />
-                  <Grid item xs={10} style={{ display: 'flex', alignItems: 'center', padding: '10px 0px', justifyContent: 'space-between' }}>
-                    <div>
-                      <Typography>Infants</Typography>
-                      <Typography variant='subtitle2' style={{ fontWeight: 400, color: 'grey' }}>Under 2</Typography>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <IconButton onClick={this.removeInfants} disabled={!this.state.infantsNum > 0} style={{ padding: 0 }}>
-                        <RemoveCircleOutlineIcon fontSize='large' />
-                      </IconButton>
-                      <Typography style={{ padding: '0px 10px' }}>{this.state.infantsNum}</Typography>
-                      <IconButton onClick={this.addInfants} style={{ padding: 0 }}>
-                        <AddCircleOutlineIcon fontSize='large' />
-                      </IconButton>
-                    </div>
-                  </Grid>
-                  <Grid item xs={10} style={{ display: 'flex', justifyContent: 'space-between', padding: '20px 0px', alignItems: 'center' }}>
-                    <Typography onClick={() => { this.resetGuests(); this.closeDialog() }} style={{ cursor: 'pointer' }}>Cancel</Typography>
-                    <Typography onClick={() => { this.guestsAddition(); this.closeDialog() }} style={{ color: '#FF385C', fontWeight: 600, cursor: 'pointer' }}>Submit</Typography>
-                  </Grid>
-                </Grid>
-              </Dialog>
-            </div>
+          <Grid onClick={this.openDialog} item xs={3} style={{ paddingLeft: 10, flexGrow: 1, height: 70, paddingTop: 7 }}>
+            <Typography variant='caption' style={{ fontWeight: 700 }}>GUESTS</Typography>
+            <Typography style={{ fontWeight: this.state.guestsAddition ? 600 : 300, color: this.state.guestsAddition ? 'black' : 'grey', fontSize: this.state.guestsAddition ? 16 : 14, paddingTop: 5 }}>{this.state.guestsAddition ? this.state.guestsAddition : 'Add guests'}</Typography>
           </Grid>
-          <div style={{ borderRadius: 5, backgroundColor: '#FF385C', color: 'white', textTransform: 'none', fontSize: 14, display: 'flex', alignItems: 'center', cursor: 'pointer', height: 'fit-content', padding: '10px 20px', justifyContent: 'center' }}>
+          <div style={{ borderRadius: 5, backgroundColor: '#FF385C', color: 'white', textTransform: 'none', fontSize: 14, display: 'flex', alignItems: 'center', cursor: 'pointer', height: 'fit-content', padding: '10px 16px', justifyContent: 'center' }}>
             <SearchIcon fontSize='small' style={{ color: 'white', paddingRight: 5 }} />
             <Typography>
               Search
             </Typography>
           </div>
         </Grid>
+        <Dialog onBackdropClick={() => { this.resetGuests(); this.closeDialog() }} onEscapeKeyDown={() => { this.resetGuests(); this.closeDialog() }} open={this.state.isDialogOpen} onClose={this.closeDialog}>
+          <Grid container justify='center' alignItems='center' style={{ maxWidth: 310 }}>
+            <Grid xs={12} item style={{ minHeight: 100, backgroundColor: '#FF385C' }} >
+              <Typography variant='h4' style={{ color: 'white', paddingLeft: 30, paddingTop: 30 }}>Guests</Typography>
+            </Grid>
+            <Grid item xs={10} style={{ display: 'flex', alignItems: 'center', padding: '10px 0px', justifyContent: 'space-between', marginTop: 10 }}>
+              <div>
+                <Typography>Adults</Typography>
+                <Typography variant='subtitle2' style={{ fontWeight: 400, color: 'grey' }}>Ages 13 or above</Typography>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <IconButton onClick={this.removeAdults} disabled={!this.state.adultsNum > 0} style={{ padding: 0 }}>
+                  <RemoveCircleOutlineIcon fontSize='large' />
+                </IconButton>
+                <Typography style={{ padding: '0px 10px' }}>{this.state.adultsNum}</Typography>
+                <IconButton onClick={this.addAdults} style={{ padding: 0 }}>
+                  <AddCircleOutlineIcon fontSize='large' />
+                </IconButton>
+              </div>
+            </Grid>
+            <Divider />
+            <Grid item xs={10} style={{ display: 'flex', alignItems: 'center', padding: '10px 0px', justifyContent: 'space-between' }}>
+              <div>
+                <Typography>Children</Typography>
+                <Typography variant='subtitle2' style={{ fontWeight: 400, color: 'grey' }}>Ages 2-12</Typography>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <IconButton onClick={this.removeChildren} disabled={!this.state.childrenNum > 0} style={{ padding: 0 }}>
+                  <RemoveCircleOutlineIcon fontSize='large' />
+                </IconButton>
+                <Typography style={{ padding: '0px 10px' }}>{this.state.childrenNum}</Typography>
+                <IconButton onClick={this.addChildren} style={{ padding: 0 }}>
+                  <AddCircleOutlineIcon fontSize='large' />
+                </IconButton>
+              </div>
+            </Grid>
+            <Divider />
+            <Grid item xs={10} style={{ display: 'flex', alignItems: 'center', padding: '10px 0px', justifyContent: 'space-between' }}>
+              <div>
+                <Typography>Infants</Typography>
+                <Typography variant='subtitle2' style={{ fontWeight: 400, color: 'grey' }}>Under 2</Typography>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <IconButton onClick={this.removeInfants} disabled={!this.state.infantsNum > 0} style={{ padding: 0 }}>
+                  <RemoveCircleOutlineIcon fontSize='large' />
+                </IconButton>
+                <Typography style={{ padding: '0px 10px' }}>{this.state.infantsNum}</Typography>
+                <IconButton onClick={this.addInfants} style={{ padding: 0 }}>
+                  <AddCircleOutlineIcon fontSize='large' />
+                </IconButton>
+              </div>
+            </Grid>
+            <Grid item xs={10} style={{ display: 'flex', justifyContent: 'space-between', padding: '20px 0px', alignItems: 'center' }}>
+              <Button variant='text' onClick={() => { this.resetGuests(); this.closeDialog() }} style={{ padding: 0, textTransform: 'none' }}>Cancel</Button>
+              <Button variant='text' onClick={() => { this.guestsAddition(); this.closeDialog() }} style={{ color: '#FF385C', fontWeight: 600, padding: 0, textTransform: 'none' }}>Submit</Button>
+            </Grid>
+          </Grid>
+        </Dialog>
       </div>
     )
   }
