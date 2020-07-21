@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Grid, Tabs, Tab, Typography, InputBase, Divider, Dialog, IconButton, Button, CircularProgress } from '@material-ui/core'
+import { Grid, Tabs, Tab, Typography, InputBase, Divider, Dialog, IconButton, Button, CircularProgress, ClickAwayListener, NoSsr } from '@material-ui/core'
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
 import SearchIcon from '@material-ui/icons/Search';
 import DateFnsUtils from '@date-io/date-fns';
@@ -19,7 +19,7 @@ export default class SearchBar extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      value: 0,
+      tabValue: 0,
       inputClicked: false,
       checkinDate: new Date(),
       checkoutDate: new Date(),
@@ -30,12 +30,13 @@ export default class SearchBar extends Component {
       guestsAddition: null,
       options: [],
       openAutocomplete: false,
-      loading: true
+      loading: false,
+      inputValue: '',
     }
   }
 
   changeTab = (event, newValue) => {
-    this.setState({ value: newValue });
+    this.setState({ tabValue: newValue });
   };
 
   checkinDateChange = (date) => {
@@ -92,78 +93,79 @@ export default class SearchBar extends Component {
   render() {
     return (
       <div>
-        <Tabs TabIndicatorProps={{ style: { background: 'black' } }} value={this.state.value} onChange={this.changeTab} aria-label="simple tabs example">
+        <Tabs TabIndicatorProps={{ style: { background: 'black' } }} value={this.state.tabValue} onChange={this.changeTab} aria-label="simple tabs example">
           <Tab style={{ textTransform: 'none', minWidth: 'initial' }} label="Places to stay" />
           <Tab style={{ textTransform: 'none', minWidth: 'initial' }} label="Experiences" />
           <Tab style={{ textTransform: 'none', minWidth: 'initial' }} label="Online experiences" />
         </Tabs>
         <Grid container alignItems='center' style={{ borderRadius: 10, border: '1px solid lightgrey', marginTop: 20, padding: '0px 10px' }}>
-          <Grid item xs={4} onClick={() => this.setState({ inputClicked: true })} style={{ position: 'relative', display: 'flex', alignItems: 'center', height: 70 }}>
-            <div style={{ flexGrow: 1 }}>
-              <Typography variant='caption' style={{ fontWeight: 700 }}>LOCATION</Typography>
-              <div>
-                <Autocomplete
-                  id='autocomplete'
-                  open={this.state.openAutocomplete}
-                  options={this.state.options}
-                  loading={this.state.loading}
-                  onOpen={() => {
-                    this.setState({ openAutocomplete: true })
-                  }}
-                  onClose={() => {
-                    this.setState({ openAutocomplete: false })
-                  }}
-                  renderInput={(params) => (
-                    <InputBase
-                      {...params}
-                      onChange={(e) => {
-                        getLocations(e.target.value).then(res => {
+          <ClickAwayListener onClickAway={() => { this.setState({ inputClicked: false, options: [] }) }}>
+            <Grid item xs={this.state.tabValue === 1 ? 5 : 4} onClick={() => this.setState({ inputClicked: true })} style={{ position: 'relative', display: 'flex', alignItems: 'center', height: 70 }}>
+              <div style={{ flexGrow: 1 }}>
+                <Typography variant='caption' style={{ fontWeight: 700 }}>LOCATION</Typography>
+                <div>
+                  <Autocomplete
+                    id='autocomplete'
+                    open={this.state.openAutocomplete}
+                    options={this.state.options}
+                    loading={this.state.loading}
+                    onOpen={() => {
+                      this.setState({ openAutocomplete: true })
+                    }}
+                    onClose={() => {
+                      this.setState({ openAutocomplete: false })
+                    }}
+                    renderInput={(params) => (
+                      <InputBase
+                        {...params}
+                        onChange={(e) => {
+                          this.setState({ inputValue: e.target.value })
                           if (e.target.value.length) {
-                            this.setState({ options: res })
-                          } else {
-                            this.setState({ options: [] })
+                            this.setState({ loading: true })
                           }
-                        })
-                      }}
-                      onKeyPress={this.handleKeyPress}
-                      style={{ width: '90%', padding: '0px !important' }}
-                      inputProps={{ placeholder: 'Where are you going?', type: 'text' }}
-                      label="Asynchronous"
-                      InputProps={{
-                        ...params.InputProps,
-                        endAdornment: (
-                          <React.Fragment>
-                            {this.state.loading ? <CircularProgress color="inherit" size={20} /> : null}
-                            {params.InputProps.endAdornment}
-                          </React.Fragment>
-                        ),
-                      }}
-                    />
-                  )}
-                />
-                <div style={{ position: 'absolute', borderRadius: 10, backgroundColor: 'white', boxShadow: ' 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)', width: '-webkit-fill-available', padding: this.state.options.length ? '10px 20px' : 0 }}>
-                  {this.state.options ? this.state.options.map(x => (
-                    <div style={{ display: 'flex', alignItems: 'center', color: 'grey' }}>
-                      <RoomIcon fontSize='large' color='inherit' style={{ paddingRight: 20 }} />
-                      <p>{x}</p>
-                    </div>
-                  )) : null}
+                          getLocations(e.target.value).then(res => {
+                            this.setState({ loading: false })
+                            this.setState({ options: res })
+                          }).catch(() => {
+                            this.setState({ options: [] })
+                          })
+                        }}
+                        endAdornment={this.state.loading ? <CircularProgress variant="indeterminate" /> : null}
+                        value={this.state.inputValue}
+                        style={{ width: '90%', padding: '0px !important' }}
+                        label="Asynchronous"
+                        inputProps={{
+                          ...params.inputProps,
+                          placeholder: 'Where are you going?',
+                          type: 'text'
+                        }}
+                      />
+                    )}
+                  />
+                  <div style={{ position: 'absolute', borderRadius: 10, backgroundColor: 'white', boxShadow: ' 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)', width: '-webkit-fill-available', padding: this.state.options.length ? '10px 20px' : 0, marginLeft: -10, marginTop: 10 }}>
+                    {this.state.options ? this.state.options.map((x, i) => (
+                      <div key={i} style={{ display: 'flex', alignItems: 'center', color: 'grey' }}>
+                        <RoomIcon fontSize='large' color='inherit' style={{ paddingRight: 20 }} />
+                        <p>{x}</p>
+                      </div>
+                    )) : null}
+                  </div>
                 </div>
               </div>
-            </div>
-            {this.state.inputClicked ? <CloseOutlinedIcon fontSize='small' /> : null}
-          </Grid>
-          <Divider orientation='vertical' style={{ height: 70 }} />
-          <Grid item xs={2} style={{ paddingLeft: 10, height: 70, alignItems: 'center', display: 'flex' }}>
+              {this.state.inputClicked ? <CloseOutlinedIcon onClick={() => { this.setState({ options: [], inputValue: '' }) }} style={{ cursor: 'pointer', paddingRight: 15 }} fontSize='small' /> : null}
+            </Grid>
+          </ClickAwayListener>
+          <Grid item xs={this.state.tabValue === 1 ? 6 : 2} style={{ paddingLeft: 10, height: 70, alignItems: 'center', display: 'flex' }}>
+            <Divider orientation='vertical' style={{ height: 70 }} />
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <KeyboardDatePicker
-                style={{ margin: 0 }}
+                style={{ margin: 0, paddingLeft: 10 }}
                 margin="normal"
                 InputProps={{ disableUnderline: true, readOnly: true }}
                 id="check in date picker"
-                label="CHECK IN"
+                label={this.state.tabValue === 1 ? 'DATE' : "CHECK IN"}
                 InputLabelProps={{
-                  style: { fontWeight: 600, color: 'black' }
+                  style: { fontWeight: 600, color: 'black', paddingLeft: 10 }
                 }}
                 format="dd/MM/yyyy"
                 value={this.state.checkinDate}
@@ -174,43 +176,51 @@ export default class SearchBar extends Component {
               />
             </MuiPickersUtilsProvider>
           </Grid>
-          <Divider orientation='vertical' style={{ height: 70 }} />
-          <Grid item xs={2} style={{ paddingLeft: 10, height: 70, alignItems: 'center', display: 'flex' }}>
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <KeyboardDatePicker
-                style={{ margin: 0 }}
-                margin="normal"
-                InputProps={{ disableUnderline: true, readOnly: true }}
-                id="check out date picker"
-                label="CHECK OUT"
-                InputLabelProps={{
-                  style: { fontWeight: 600, color: 'black' }
-                }}
-                format="dd/MM/yyyy"
-                value={this.state.checkoutDate}
-                onChange={this.checkoutDateChange}
-                KeyboardButtonProps={{
-                  'aria-label': 'change date',
-                }}
-              />
-            </MuiPickersUtilsProvider>
-          </Grid>
-          <Divider orientation='vertical' style={{ height: 70 }} />
-          <Grid onClick={this.openDialog} item xs={3} style={{ paddingLeft: 10, flexGrow: 1, height: 70, paddingTop: 7 }}>
-            <Typography variant='caption' style={{ fontWeight: 700 }}>GUESTS</Typography>
-            <Typography style={{ fontWeight: this.state.guestsAddition ? 600 : 300, color: this.state.guestsAddition ? 'black' : 'grey', fontSize: this.state.guestsAddition ? 16 : 14, paddingTop: 5 }}>{this.state.guestsAddition ? this.state.guestsAddition : 'Add guests'}</Typography>
-          </Grid>
-          <div style={{ borderRadius: 5, backgroundColor: '#FF385C', color: 'white', textTransform: 'none', fontSize: 14, display: 'flex', alignItems: 'center', cursor: 'pointer', height: 'fit-content', padding: '10px 16px', justifyContent: 'center' }}>
-            <SearchIcon fontSize='small' style={{ color: 'white', paddingRight: 5 }} />
-            <Typography>
-              Search
+          {this.state.tabValue === 1 ? null :
+            <Grid item xs={2} style={{ paddingLeft: 10, height: 70, alignItems: 'center', display: 'flex' }}>
+              <Divider orientation='vertical' style={{ height: 70 }} />
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <KeyboardDatePicker
+                  style={{ margin: 0, paddingLeft: 10 }}
+                  margin="normal"
+                  InputProps={{ disableUnderline: true, readOnly: true }}
+                  id="check out date picker"
+                  label="CHECK OUT"
+                  InputLabelProps={{
+                    style: { fontWeight: 600, color: 'black', paddingLeft: 10 }
+                  }}
+                  format="dd/MM/yyyy"
+                  value={this.state.checkoutDate}
+                  onChange={this.checkoutDateChange}
+                  KeyboardButtonProps={{
+                    'aria-label': 'change date',
+                  }}
+                />
+              </MuiPickersUtilsProvider>
+            </Grid>
+          }
+          {this.state.tabValue === 1 ? null :
+            <Grid onClick={this.openDialog} item xs={3} style={{ paddingLeft: 10, flexGrow: 1, height: 70, display: 'flex' }}>
+              <Divider orientation='vertical' style={{ height: 70 }} />
+              <div style={{ paddingTop: 7, paddingLeft: 10 }}>
+                <Typography variant='caption' style={{ fontWeight: 700 }}>GUESTS</Typography>
+                <Typography style={{ fontWeight: this.state.guestsAddition ? 600 : 300, color: this.state.guestsAddition ? 'black' : 'grey', fontSize: this.state.guestsAddition ? 16 : 14, paddingTop: 5 }}>{this.state.guestsAddition ? this.state.guestsAddition : 'Add guests'}</Typography>
+              </div>
+            </Grid>
+          }
+          <Grid item xs={1}>
+            <div style={{ borderRadius: 5, backgroundColor: '#FF385C', color: 'white', textTransform: 'none', fontSize: 14, display: 'flex', alignItems: 'center', cursor: 'pointer', height: 'fit-content', padding: '10px 18px', justifyContent: 'center' }}>
+              <SearchIcon fontSize='small' style={{ color: 'white', paddingRight: 5 }} />
+              <Typography>
+                Search
             </Typography>
-          </div>
+            </div>
+          </Grid>
         </Grid>
         <Dialog onBackdropClick={() => { this.resetGuests(); this.closeDialog() }} onEscapeKeyDown={() => { this.resetGuests(); this.closeDialog() }} open={this.state.isDialogOpen} onClose={this.closeDialog}>
           <Grid container justify='center' alignItems='center' style={{ maxWidth: 310 }}>
             <Grid xs={12} item style={{ minHeight: 100, backgroundColor: '#FF385C' }} >
-              <Typography variant='h4' style={{ color: 'white', paddingLeft: 30, paddingTop: 30 }}>Guests</Typography>
+              <Typography variant='h4' style={{ color: 'white', paddingLeft: 24, paddingTop: 40 }}>Guests</Typography>
             </Grid>
             <Grid item xs={10} style={{ display: 'flex', alignItems: 'center', padding: '10px 0px', justifyContent: 'space-between', marginTop: 10 }}>
               <div>
