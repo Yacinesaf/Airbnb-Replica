@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux'
-import photos from './photos'
+import categoriesPhotos from './categoriesPhotos'
 
 
 export default combineReducers({
-  photos,
+  categoriesPhotos,
 })

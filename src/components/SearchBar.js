@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Grid, Tabs, Tab, Typography, InputBase, Divider, Dialog, IconButton, Button, CircularProgress, ClickAwayListener, NoSsr } from '@material-ui/core'
+import { Grid, Tabs, Tab, Typography, InputBase, Divider, Dialog, IconButton, Button, CircularProgress, ClickAwayListener } from '@material-ui/core'
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
 import SearchIcon from '@material-ui/icons/Search';
 import DateFnsUtils from '@date-io/date-fns';
@@ -9,7 +9,6 @@ import {
 } from '@material-ui/pickers';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
-import Autocomplete from '@material-ui/lab/Autocomplete';
 import { getLocations } from '../services/apiEndpoints'
 import RoomIcon from '@material-ui/icons/Room';
 
@@ -29,7 +28,6 @@ export default class SearchBar extends Component {
       infantsNum: 0,
       guestsAddition: null,
       options: [],
-      openAutocomplete: false,
       loading: false,
       inputValue: '',
     }
@@ -104,47 +102,31 @@ export default class SearchBar extends Component {
               <div style={{ flexGrow: 1 }}>
                 <Typography variant='caption' style={{ fontWeight: 700 }}>LOCATION</Typography>
                 <div>
-                  <Autocomplete
-                    id='autocomplete'
-                    open={this.state.openAutocomplete}
-                    options={this.state.options}
-                    loading={this.state.loading}
-                    onOpen={() => {
-                      this.setState({ openAutocomplete: true })
+                  <InputBase
+                    onChange={(e) => {
+                      this.setState({ inputValue: e.target.value })
+                      if (e.target.value.length) {
+                        this.setState({ loading: true })
+                      }
+                      getLocations(e.target.value).then(res => {
+                        this.setState({ loading: false })
+                        this.setState({ options: res })
+                      }).catch(() => {
+                        this.setState({ options: [] })
+                      })
                     }}
-                    onClose={() => {
-                      this.setState({ openAutocomplete: false })
+                    endAdornment={this.state.loading ? <CircularProgress variant="indeterminate" /> : null}
+                    value={this.state.inputValue}
+                    style={{ width: '90%', padding: '0px !important' }}
+                    label="Asynchronous"
+                    inputProps={{
+                      placeholder: 'Where are you going?',
+                      type: 'text'
                     }}
-                    renderInput={(params) => (
-                      <InputBase
-                        {...params}
-                        onChange={(e) => {
-                          this.setState({ inputValue: e.target.value })
-                          if (e.target.value.length) {
-                            this.setState({ loading: true })
-                          }
-                          getLocations(e.target.value).then(res => {
-                            this.setState({ loading: false })
-                            this.setState({ options: res })
-                          }).catch(() => {
-                            this.setState({ options: [] })
-                          })
-                        }}
-                        endAdornment={this.state.loading ? <CircularProgress variant="indeterminate" /> : null}
-                        value={this.state.inputValue}
-                        style={{ width: '90%', padding: '0px !important' }}
-                        label="Asynchronous"
-                        inputProps={{
-                          ...params.inputProps,
-                          placeholder: 'Where are you going?',
-                          type: 'text'
-                        }}
-                      />
-                    )}
                   />
                   <div style={{ position: 'absolute', borderRadius: 10, backgroundColor: 'white', boxShadow: ' 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)', width: '-webkit-fill-available', padding: this.state.options.length ? '10px 20px' : 0, marginLeft: -10, marginTop: 10 }}>
                     {this.state.options ? this.state.options.map((x, i) => (
-                      <div key={i} style={{ display: 'flex', alignItems: 'center', color: 'grey' }}>
+                      <div onClick={(e) => { this.setState({ inputValue: e.currentTarget.innerText, options : [] }) }} key={i} style={{ display: 'flex', alignItems: 'center', color: 'grey' }}>
                         <RoomIcon fontSize='large' color='inherit' style={{ paddingRight: 20 }} />
                         <p>{x}</p>
                       </div>

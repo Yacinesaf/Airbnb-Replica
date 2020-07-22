@@ -1,12 +1,11 @@
 import React, { Component } from 'react'
-import { AppBar, Typography, Button, Grid, Menu, MenuItem, Divider } from '@material-ui/core'
+import { AppBar, Typography, Grid, Menu, MenuItem, Divider } from '@material-ui/core'
 import logoText from '../assets/logoText.png'
 import LanguageIcon from '@material-ui/icons/Language';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import MenuIcon from '@material-ui/icons/Menu';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import '../style.css'
-import { withStyles } from '@material-ui/core/styles';
 import SearchBar from './SearchBar';
 
 
