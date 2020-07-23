@@ -27,14 +27,14 @@ class CategoriesDisplay extends Component {
               {this.props.fetching ?
                 [0, 1, 2].map(x => (
                   <Grid key={x} item xs={12} md={4} style={{ padding: 10 }}>
-                    <Skeleton animation='wave' variant='rect' style={{ width: '100%', height: 200, borderRadius: 15 }} />
+                    <Skeleton animation='wave' variant='rect' style={{ width: '100%', height: this.props.smDwon ? 200 : 300, borderRadius: 15 }} />
                   </Grid>
                 ))
                 :
                 this.props.categoriesPhotos.map((x, i) => (
                   <Grid key={i} item xs={12} md={4} style={{ padding: 10 }}>
                     <div style={{ boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)', borderRadius: 15, overflow: 'hidden' }}>
-                      <div style={{ backgroundImage: `url(${x.urls.raw})`, backgroundPosition: 'center', backgroundSize: 'cover', height: 208, width: '100%' }} />
+                      <div style={{ backgroundImage: `url(${x.urls.raw})`, backgroundPosition: 'center', backgroundSize: 'cover', height: this.props.smDown ? 208 : 258, width: '100%' }} />
                       <div style={{ padding: '10px 20px' }}>
                         <Typography style={{fontWeight : this.props.smDown ? 600 : 500}}>{this.props.categoriesTexts[i].title}</Typography>
                         <Typography style={{ color: 'grey', fontSize: this.props.smDown ? 14 : 10 }}>{this.props.categoriesTexts[i].subs}</Typography>

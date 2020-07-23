@@ -6,9 +6,6 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import MenuIcon from '@material-ui/icons/Menu';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import '../style.css'
-import SearchBar from './SearchBar';
-
-
 
 class Navbar extends Component {
   constructor() {
@@ -21,10 +18,10 @@ class Navbar extends Component {
 
   render() {
     return (
-      <AppBar color='transparent' position="sticky" style={{ boxShadow: 'none' }}>
+      <AppBar color={this.props.scrolledDown ? 'inherit' : 'transparent'} position="sticky" style={{ boxShadow: this.props.scrolledDown ? '0 2px 6px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.13)' : 'none' }}>
         <Grid container justify='center'>
           <Grid item xs={10}>
-            <Grid container justify='space-between' style={{ padding: '30px 0px' }} alignItems='center'>
+            <Grid container justify='space-between' style={{ padding: '15px 10px' }} alignItems='center'>
               <Grid item xs={2}>
                 <img src={logoText} alt='logo' height={32} />
               </Grid>
@@ -39,7 +36,6 @@ class Navbar extends Component {
                 </div>
               </Grid>
             </Grid>
-            <SearchBar />
           </Grid>
         </Grid>
         <Menu

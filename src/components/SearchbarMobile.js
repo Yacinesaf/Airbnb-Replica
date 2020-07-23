@@ -88,12 +88,19 @@ export default class SearchbarMobile extends Component {
             </Grid>
           </DialogActions>
           <DialogContent>
-            {this.state.options ? this.state.options.map((x, i) => (
-              <div onClick={(e) => { this.setState({ inputValue: e.currentTarget.innerText, options: [], isDialogOpen : false }) }} key={i} style={{ display: 'flex', alignItems: 'center', color: 'grey' }}>
+            {this.state.options.length ? this.state.options.map((x, i) => (
+              <div onClick={(e) => { this.setState({ inputValue: e.currentTarget.innerText, options: [], isDialogOpen: false }) }} key={i} style={{ display: 'flex', alignItems: 'center', color: 'grey' }}>
                 <RoomIcon fontSize='large' color='inherit' style={{ paddingRight: 20 }} />
                 <p>{x}</p>
               </div>
-            )) : null}
+            )) :
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{ backgroundColor: 'lightgrey', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', padding : "7px 10px" }}>
+                  <RoomIcon fontSize='small' style={{ color: '#424242' }} />
+                </div>
+                <Typography style={{paddingLeft : 10}}>Nearby</Typography>
+              </div>
+            }
           </DialogContent>
         </Dialog>
       </Grid>

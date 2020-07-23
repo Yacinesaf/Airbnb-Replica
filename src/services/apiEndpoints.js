@@ -16,7 +16,9 @@ const getCategoriesPhotos = () => {
 
 }
 
+
+
 export {
   getLocations,
-  getCategoriesPhotos
+  getCategoriesPhotos,
 }
