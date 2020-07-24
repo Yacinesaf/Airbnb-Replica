@@ -13,7 +13,7 @@ class CategoriesDisplay extends Component {
 
   render() {
     return (
-      <div style={{ paddingBottom: 80 }}>
+      <div style={{ paddingBottom: 40 }}>
         <Grid container justify='center'>
           <Grid item xs={10}>
             <Grid container>

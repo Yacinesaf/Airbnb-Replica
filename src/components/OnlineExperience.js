@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Grid, Typography, Button, Card, CardActionArea, CardActions, CardMedia } from '@material-ui/core'
 
- class OnlineExperience extends Component {
+class OnlineExperience extends Component {
   constructor(props) {
     super(props)
 
@@ -29,9 +29,8 @@ import { Grid, Typography, Button, Card, CardActionArea, CardActions, CardMedia 
   }
 
   render() {
-    console.log(this.props);
     return (
-      <Grid container justify='center' style={{ backgroundColor: 'black', minHeight: '100vh', padding: '60px 10px' }}>
+      <Grid container justify='center' style={{ backgroundColor: 'black', minHeight: '100vh', padding: this.props.smDown ? '20px 10px' : '60px 10px' }}>
         <Grid item xs={10}>
           <Grid container >
             <Grid item xs={12} style={{ display: this.props.smDown ? 'block' : 'flex', justifyContent: 'space-between', paddingBottom: 40 }}>
@@ -41,14 +40,14 @@ import { Grid, Typography, Button, Card, CardActionArea, CardActions, CardMedia 
                 <Typography variant='caption' style={{ color: 'white' }}>interactive activities led by one-of-a-kind hosts—all without leaving home.</Typography>
               </div>
               <div>
-                <Button variant='outlined' color='inherit' style={{ color: 'white', borderRadius: 7, textTransform: 'none' }}>Explore all</Button>
+                <Button variant='outlined' color='inherit' style={{ color: 'white', borderRadius: 7, textTransform: 'none', marginTop: this.props.smDown ? 20 : 0 }}>Explore all</Button>
               </div>
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={6} style={{ paddingBottom: 18 }}>
               <Card style={{ width: '100%', borderRadius: 15 }}>
                 <CardActionArea>
                   <CardMedia
-                    style={{ height: this.props.smDown ? 324 : 724, width: '100%' }}
+                    style={{ height: this.props.smDown ? 224 : 724, width: '100%' }}
                     image={this.state.online[0].img}
                   />
                 </CardActionArea>
@@ -57,13 +56,13 @@ import { Grid, Typography, Button, Card, CardActionArea, CardActions, CardMedia 
                 </CardActions>
               </Card>
             </Grid>
-            <Grid item xs={12} md={6} style={{ maxHeight: 800, paddingLeft: 20 }}>
+            <Grid item xs={12} md={6} style={{ maxHeight: this.props.smDown ? 'unset' : 800, paddingLeft: this.props.smDown ? 0 : 20 }}>
               <Grid container>
-                <Grid item xs={12} md={6} style={{ paddingBottom: 18, paddingRight: 5 }}>
+                <Grid item xs={12} md={6} style={{ paddingBottom: 18, paddingRight: this.props.smDown ? 0 : 5 }}>
                   <Card style={{ width: '100%', borderRadius: 15 }}>
                     <CardActionArea>
                       <CardMedia
-                        style={{ height: 316, width: '100%' }}
+                        style={{ height: this.props.smDown ? 224 : 316, width: '100%' }}
                         image={this.state.online[1].img}
                       />
                     </CardActionArea>
@@ -72,11 +71,11 @@ import { Grid, Typography, Button, Card, CardActionArea, CardActions, CardMedia 
                     </CardActions>
                   </Card>
                 </Grid>
-                <Grid item xs={12} md={6} style={{ paddingBottom: 18, paddingLeft: 5 }}>
+                <Grid item xs={12} md={6} style={{ paddingBottom: 18, paddingLeft: this.props.smDown ? 0 : 5 }}>
                   <Card style={{ width: '100%', borderRadius: 15 }}>
                     <CardActionArea>
                       <CardMedia
-                        style={{ height: 316, width: '100%' }}
+                        style={{ height: this.props.smDown ? 224 : 316, width: '100%' }}
                         image={this.state.online[2].img}
                       />
                     </CardActionArea>
@@ -89,7 +88,7 @@ import { Grid, Typography, Button, Card, CardActionArea, CardActions, CardMedia 
                   <Card style={{ width: '100%', borderRadius: 15 }}>
                     <CardActionArea>
                       <CardMedia
-                        style={{ height: 316, width: '100%' }}
+                        style={{ height: this.props.smDown ? 224 : 316, width: '100%' }}
                         image={this.state.online[3].img}
                       />
                     </CardActionArea>
@@ -100,9 +99,9 @@ import { Grid, Typography, Button, Card, CardActionArea, CardActions, CardMedia 
                 </Grid>
               </Grid>
             </Grid>
-          </Grid >
-        </Grid >
-      </Grid >
+          </Grid>
+        </Grid>
+      </Grid>
     )
   }
 }

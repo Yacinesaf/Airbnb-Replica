@@ -42,7 +42,8 @@ export default class SearchbarMobile extends Component {
               label="Asynchronous"
               inputProps={{
                 placeholder: 'Where are you going?',
-                type: 'text'
+                type: 'text',
+                readOnly : true
               }}
             />
           </div>

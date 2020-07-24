@@ -15,7 +15,7 @@ class Navbar extends Component {
       anchorEl2: null,
     }
   }
-
+  //window.scrollTo(0,0)
   render() {
     return (
       <AppBar color={this.props.scrolledDown ? 'inherit' : 'transparent'} position="sticky" style={{ boxShadow: this.props.scrolledDown ? '0 2px 6px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.13)' : 'none' }}>

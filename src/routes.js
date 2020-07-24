@@ -9,6 +9,7 @@ import CategoriesDisplay from './components/CategoriesDisplay';
 import OnlineExperience from './components/OnlineExperience';
 import SearchBar from './components/SearchBar';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
+import Other from './components/Other';
 
 
 
@@ -24,17 +25,18 @@ const themee = createMuiTheme({
 
 
 function Routes() {
-  const scrolledDown = useScrollTrigger({ threshold: 50 });
+  const scrolledDown = useScrollTrigger({ threshold: 50, disableHysteresis: true });
   const theme = useTheme();
   const smDown = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
     <MuiThemeProvider theme={themee}>
-      <div>
-        {smDown ? <NavbarMobile /> : <Navbar scrolledDown={scrolledDown} />}
+      {smDown ? <NavbarMobile /> : <Navbar scrolledDown={scrolledDown} />}
+      <div style={{ marginBottom: smDown ? 56 : 0 }}>
         {smDown ? null : <SearchBar />}
         <CategoriesDisplay smDown={smDown} />
         <OnlineExperience smDown={smDown} />
+        <Other />
       </div>
     </MuiThemeProvider>
   );
