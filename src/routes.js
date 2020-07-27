@@ -10,6 +10,7 @@ import OnlineExperience from './components/OnlineExperience';
 import SearchBar from './components/SearchBar';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import Other from './components/Other';
+import Footer from './components/Footer';
 
 
 
@@ -37,6 +38,7 @@ function Routes() {
         <CategoriesDisplay smDown={smDown} />
         <OnlineExperience smDown={smDown} />
         <Other />
+        <Footer />
       </div>
     </MuiThemeProvider>
   );

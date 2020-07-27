@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
-import { AppBar, Typography, Grid, Menu, MenuItem, Divider } from '@material-ui/core'
+import { AppBar, Typography, Grid, Menu, MenuItem, Divider, Button } from '@material-ui/core'
 import logoText from '../assets/logoText.png'
 import LanguageIcon from '@material-ui/icons/Language';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import MenuIcon from '@material-ui/icons/Menu';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import '../style.css'
+import SearchIcon from '@material-ui/icons/Search';
+
 
 class Navbar extends Component {
   constructor() {
@@ -15,7 +17,7 @@ class Navbar extends Component {
       anchorEl2: null,
     }
   }
-  //window.scrollTo(0,0)
+  //
   render() {
     return (
       <AppBar color={this.props.scrolledDown ? 'inherit' : 'transparent'} position="sticky" style={{ boxShadow: this.props.scrolledDown ? '0 2px 6px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.13)' : 'none' }}>
@@ -25,6 +27,14 @@ class Navbar extends Component {
               <Grid item xs={2}>
                 <img src={logoText} alt='logo' height={32} />
               </Grid>
+              {this.props.scrolledDown ?
+                <Grid onClick={() => { window.scrollTo(0, 0) }} item xs={2}>
+                  <Button fullWidth variant='outlined' style={{ textTransform: 'none', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderRadius: 25, padding: 5, paddingLeft: 15 }}>
+                    Start your search
+                  <div style={{ backgroundColor: '#FF385C', borderRadius: '50%', padding: 5, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><SearchIcon fontSize='small' style={{ color: 'white' }} /></div>
+                  </Button>
+                </Grid>
+                : null}
               <Grid item xs={2} style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', cursor: 'pointer' }}>
                 <div onClick={(e) => this.setState({ anchorEl1: e.currentTarget })} style={{ display: 'flex', alignItems: 'center', paddingRight: 10 }}>
                   <LanguageIcon style={{ color: '#484848' }} />
