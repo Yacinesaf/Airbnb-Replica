@@ -96,7 +96,6 @@ function Footer(props) {
               </div>
             </div>
           }
-
         </Grid>
       </Grid>
     </Grid>
