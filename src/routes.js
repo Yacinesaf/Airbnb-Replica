@@ -11,7 +11,7 @@ import SearchBar from './components/SearchBar';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import Other from './components/Other';
 import Footer from './components/Footer';
-
+import SearchResultsMap from './components/SearchResultsMap.js'
 
 
 const themee = createMuiTheme({
@@ -32,14 +32,14 @@ function Routes() {
 
   return (
     <MuiThemeProvider theme={themee}>
-      {smDown ? <NavbarMobile /> : <Navbar scrolledDown={scrolledDown} />}
+      {/*      {smDown ? <NavbarMobile /> : <Navbar scrolledDown={scrolledDown} />}
       <div style={{ marginBottom: smDown ? 56 : 0 }}>
         {smDown ? null : <SearchBar />}
         <CategoriesDisplay smDown={smDown} />
         <OnlineExperience smDown={smDown} />
         <Other />
-        <Footer />
-      </div>
+  <Footer />*/}
+      <SearchResultsMap />
     </MuiThemeProvider>
   );
 }
