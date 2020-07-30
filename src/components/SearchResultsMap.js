@@ -29,6 +29,7 @@ export default class SearchResultsMap extends Component {
     return (
       <Grid container style={{ minHeight: '100vh' }}>
         <Grid item xs={6}>
+        <div></div>
         </Grid>
         <Grid item xs={6} style={{ height: '100%' }}>
           <div style={{ height: '100vh' }} ref={el => this.mapContainer = el} />
