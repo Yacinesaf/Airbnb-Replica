@@ -15,14 +15,12 @@ export default class SearchResultsMap extends Component {
   componentDidMount() {
     const map = new mapboxgl.Map({
       container: this.mapContainer,
-      style: 'mapbox://styles/mapbox/outdoors-v11',
+      style: 'mapbox://styles/mapbox/light-v10',
       center: [this.state.lng, this.state.lat],
       zoom: this.state.zoom,
       accessToken : 'pk.eyJ1IjoidHN1c2hpIiwiYSI6ImNrY3V1cDJoMTFzcTgzMm1mNHVmMXB5Y2cifQ.fftFTePNksxmgthYcL4LBw',
+      compact : true
     });
-    var marker = new mapboxgl.Marker()
-    .setLngLat([12.550343, 55.665957])
-    .addTo(map);
   }
 
   render() {
