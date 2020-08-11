@@ -16,9 +16,17 @@ const getCategoriesPhotos = () => {
 
 }
 
+const getPhotos = () => {
+  return axios.get('https://api.unsplash.com/photos/random?client_id=qeLswcEc5-He0IdtsRjuMiaslcpkfVgpO2jDNx5BTUA&query=House&count=20')
+    .then(res => {
+      return res.data
+    })
+
+}
 
 
 export {
   getLocations,
   getCategoriesPhotos,
+  getPhotos
 }

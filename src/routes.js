@@ -32,7 +32,8 @@ function Routes() {
 
   return (
     <MuiThemeProvider theme={themee}>
-      {/*      {smDown ? <NavbarMobile /> : <Navbar scrolledDown={scrolledDown} />}
+      {smDown ? <NavbarMobile /> : <Navbar scrolledDown={scrolledDown} />}
+      {/*      
       <div style={{ marginBottom: smDown ? 56 : 0 }}>
         {smDown ? null : <SearchBar />}
         <CategoriesDisplay smDown={smDown} />
