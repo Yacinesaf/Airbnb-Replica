@@ -40,7 +40,7 @@ function Routes() {
         <OnlineExperience smDown={smDown} />
         <Other />
   <Footer />*/}
-      <SearchResultsMap />
+      <SearchResultsMap smDown={smDown} />
     </MuiThemeProvider>
   );
 }
