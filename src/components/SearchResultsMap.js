@@ -28,6 +28,7 @@ class SearchResultsMap extends Component {
   }
 
   render() {
+    console.log(this.props.coordinates);
     return (
       <Grid container justify='center' style={{ minHeight: '100vh', paddingBottom: 56 }}>
         {this.state.showMap ? <Grid item xs={12} md={6} style={{ height: '100%' }}>
@@ -35,7 +36,7 @@ class SearchResultsMap extends Component {
         </Grid> :
           <Grid item xs={12} md={6} style={{ padding: 30 }}>
             <Typography variant='subtitle2'>300+ stays</Typography>
-            <Typography variant='h4' style={{ paddingBottom: 20, fontWeight: 600 }}>stays in {this.props.citySearch}</Typography>
+            <Typography variant='h4' style={{ paddingBottom: 20, fontWeight: 600, texOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', width : 700 }}>stays in {this.props.cityName}</Typography>
             {this.props.smDown ?
               <Chip style={{ padding: '0px 10px' }} variant="outlined" label="filters" />
               :
@@ -60,8 +61,8 @@ class SearchResultsMap extends Component {
           </Grid>
         }
         {this.props.smDown ? null :
-          <Grid item xs={12} md={6} style={{ height: '100%' }}>
-            <div style={{ Height: '100vh', position: "absolute", right: 0 }} ref={el => this.mapContainer = el} />
+          <Grid item xs={12} md={6} style={{ height: '100vh' }}>
+            <div style={{ height: '100vh', position: "fixed", right: 0, width: '50%' }} ref={el => this.mapContainer = el} />
           </Grid>
         }
 
@@ -72,7 +73,10 @@ class SearchResultsMap extends Component {
 
 const mapStateToProps = state => ({
   photos: state.resultsPhotos.resultsPhotos,
-  fetching: state.resultsPhotos.fetchingResultsPhotos
+  fetching: state.resultsPhotos.fetchingResultsPhotos,
+  cityName: state.adressesCoordinates.cityName,
+  coordinates: state.adressesCoordinates.coordinates,
+
 })
 
 export default connect(mapStateToProps, { getResultsPhotos })(SearchResultsMap)

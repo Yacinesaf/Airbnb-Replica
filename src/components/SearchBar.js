@@ -10,11 +10,13 @@ import {
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 import { getLocations } from '../services/apiEndpoints'
+import { setCityName, getCoordinates } from '../reduxStore/actions.js'
 import RoomIcon from '@material-ui/icons/Room';
+import { connect } from 'react-redux'
 
 
 
-export default class SearchBar extends Component {
+class SearchBar extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -91,7 +93,7 @@ export default class SearchBar extends Component {
   render() {
     return (
       <Grid container justify='center'>
-        <Grid item xs={10} style={{padding : '0px 10px'}}>
+        <Grid item xs={10} style={{ padding: '0px 10px' }}>
           <Tabs TabIndicatorProps={{ style: { background: 'black' } }} value={this.state.tabValue} onChange={this.changeTab} aria-label="simple tabs example">
             <Tab style={{ textTransform: 'none', minWidth: 'initial' }} label="Places to stay" />
             <Tab style={{ textTransform: 'none', minWidth: 'initial' }} label="Experiences" />
@@ -115,6 +117,7 @@ export default class SearchBar extends Component {
                         }).catch(() => {
                           this.setState({ options: [] })
                         })
+
                       }}
                       endAdornment={this.state.loading ? <CircularProgress variant="indeterminate" /> : null}
                       value={this.state.inputValue}
@@ -192,7 +195,12 @@ export default class SearchBar extends Component {
               </Grid>
             }
             <Grid item xs={1}>
-              <div style={{ borderRadius: 5, backgroundColor: '#FF385C', color: 'white', textTransform: 'none', fontSize: 14, display: 'flex', alignItems: 'center', cursor: 'pointer', height: 'fit-content', padding: '10px 18px', justifyContent: 'center' }}>
+              <div onClick={() => {
+                this.props.setCityName(this.state.inputValue);
+                this.props.getCoordinates(this.state.inputValue);
+                this.props.history.push('/searchResults');
+              }}
+                style={{ borderRadius: 5, backgroundColor: '#FF385C', color: 'white', textTransform: 'none', fontSize: 14, display: 'flex', alignItems: 'center', cursor: 'pointer', height: 'fit-content', padding: '10px 18px', justifyContent: 'center' }}>
                 <SearchIcon fontSize='small' style={{ color: 'white', paddingRight: 5 }} />
                 <Typography>
                   Search
@@ -263,3 +271,9 @@ export default class SearchBar extends Component {
     )
   }
 }
+
+const mapStateToProps = state => ({
+
+})
+
+export default connect(mapStateToProps, { setCityName, getCoordinates })(SearchBar)

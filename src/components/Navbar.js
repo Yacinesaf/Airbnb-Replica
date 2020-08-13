@@ -27,7 +27,7 @@ class Navbar extends Component {
               <Grid item xs={2}>
                 <img src={logoText} alt='logo' height={32} />
               </Grid>
-              {this.props.scrolledDown ?
+              {this.props.location !== '/' ? null : this.props.scrolledDown ?
                 <Grid onClick={() => { window.scrollTo(0, 0) }} item xs={2}>
                   <Button fullWidth variant='outlined' style={{ textTransform: 'none', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderRadius: 25, padding: 5, paddingLeft: 15 }}>
                     Start your search
