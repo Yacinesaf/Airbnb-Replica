@@ -9,9 +9,9 @@ class SearchResultsMap extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      lng: 5,
-      lat: 34,
-      zoom: 2,
+      lat: 135.5023,
+      long: 34.6937,
+      zoom: 11,
       showMap: false,
     };
   }
@@ -19,24 +19,29 @@ class SearchResultsMap extends Component {
     const map = new mapboxgl.Map({
       container: this.mapContainer,
       style: 'mapbox://styles/mapbox/light-v10',
-      center: [this.state.lng, this.state.lat],
+      center: this.props.cityCoordinates ? [this.props.cityCoordinates[0], this.props.cityCoordinates[1]] : [this.state.lat, this.state.long],
       zoom: this.state.zoom,
       accessToken: 'pk.eyJ1IjoidHN1c2hpIiwiYSI6ImNrY3V1cDJoMTFzcTgzMm1mNHVmMXB5Y2cifQ.fftFTePNksxmgthYcL4LBw',
       compact: true
     });
+    new mapboxgl.Marker()
+      .setLngLat(this.props.cityCoordinates ? [this.props.cityCoordinates[0], this.props.cityCoordinates[1]] : [this.state.lat, this.state.long])
+      .addTo(map);
+      
     this.props.getResultsPhotos()
   }
 
   render() {
-    console.log(this.props.coordinates);
     return (
       <Grid container justify='center' style={{ minHeight: '100vh', paddingBottom: 56 }}>
-        {this.state.showMap ? <Grid item xs={12} md={6} style={{ height: '100%' }}>
-          <div style={{ Height: '100vh', position: "absolute", right: 0 }} ref={el => this.mapContainer = el} />
-        </Grid> :
+        {this.state.showMap ?
+          <Grid item xs={12} md={6} style={{ height: '100%' }}>
+            <div style={{ height: '100vh', position: "absolute", right: 0 }} ref={el => this.mapContainer = el} />
+          </Grid>
+          :
           <Grid item xs={12} md={6} style={{ padding: 30 }}>
             <Typography variant='subtitle2'>300+ stays</Typography>
-            <Typography variant='h4' style={{ paddingBottom: 20, fontWeight: 600, texOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', width : 700 }}>stays in {this.props.cityName}</Typography>
+            <Typography variant='h4' style={{ paddingBottom: 20, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 700 }}>Stays in {this.props.cityName}</Typography>
             {this.props.smDown ?
               <Chip style={{ padding: '0px 10px' }} variant="outlined" label="filters" />
               :
@@ -61,8 +66,8 @@ class SearchResultsMap extends Component {
           </Grid>
         }
         {this.props.smDown ? null :
-          <Grid item xs={12} md={6} style={{ height: '100vh' }}>
-            <div style={{ height: '100vh', position: "fixed", right: 0, width: '50%' }} ref={el => this.mapContainer = el} />
+          <Grid item xs={12} md={6} style={{ height: 'calc(100vh - 76px)' }}>
+            <div style={{ height: 'calc(100vh - 76px)', position: "fixed", right: 0, width: '50%', overflow : 'hidden' }} ref={el => this.mapContainer = el} />
           </Grid>
         }
 
@@ -76,7 +81,7 @@ const mapStateToProps = state => ({
   fetching: state.resultsPhotos.fetchingResultsPhotos,
   cityName: state.adressesCoordinates.cityName,
   coordinates: state.adressesCoordinates.coordinates,
-
+  cityCoordinates: state.adressesCoordinates.cityCenter
 })
 
 export default connect(mapStateToProps, { getResultsPhotos })(SearchResultsMap)

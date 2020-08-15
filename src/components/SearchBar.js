@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Grid, Tabs, Tab, Typography, InputBase, Divider, Dialog, IconButton, Button, CircularProgress, ClickAwayListener } from '@material-ui/core'
+import { Grid, Tabs, Tab, Typography, InputBase, Divider, Dialog, IconButton, Button, CircularProgress, ClickAwayListener, Snackbar } from '@material-ui/core'
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
 import SearchIcon from '@material-ui/icons/Search';
 import DateFnsUtils from '@date-io/date-fns';
@@ -10,11 +10,14 @@ import {
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 import { getLocations } from '../services/apiEndpoints'
-import { setCityName, getCoordinates } from '../reduxStore/actions.js'
+import { setCity, getCoordinates } from '../reduxStore/actions.js'
 import RoomIcon from '@material-ui/icons/Room';
 import { connect } from 'react-redux'
+import MuiAlert from '@material-ui/lab/Alert';
 
-
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 class SearchBar extends Component {
   constructor(props) {
@@ -32,6 +35,8 @@ class SearchBar extends Component {
       options: [],
       loading: false,
       inputValue: '',
+      showSnackbar: false,
+      cityCoordinates: null
     }
   }
 
@@ -87,6 +92,18 @@ class SearchBar extends Component {
     });
   }
 
+  isFormValid = () => {
+    // if (this.state.inputValue && this.state.guestsAddition > 0 && this.state.checkoutDate && this.state.checkinDate) {
+    //   return true
+    // } else {
+    //   return false
+    // }
+    if (this.state.inputValue) {
+      return true
+    } else {
+      return false
+    }
+  }
 
 
 
@@ -110,16 +127,17 @@ class SearchBar extends Component {
                         this.setState({ inputValue: e.target.value })
                         if (e.target.value.length) {
                           this.setState({ loading: true })
-                        }
-                        getLocations(e.target.value).then(res => {
-                          this.setState({ loading: false })
-                          this.setState({ options: res })
-                        }).catch(() => {
+                          getLocations(e.target.value).then(res => {
+                            this.setState({ loading: false })
+                            this.setState({ options: res })
+                          }).catch(() => {
+                            this.setState({ options: [] })
+                          })
+                        } else {
                           this.setState({ options: [] })
-                        })
-
+                        }
                       }}
-                      endAdornment={this.state.loading ? <CircularProgress variant="indeterminate" /> : null}
+                      endAdornment={this.state.loading ? <CircularProgress size={30} variant="indeterminate" /> : null}
                       value={this.state.inputValue}
                       style={{ width: '90%', padding: '0px !important' }}
                       label="Asynchronous"
@@ -130,15 +148,15 @@ class SearchBar extends Component {
                     />
                     <div style={{ position: 'absolute', borderRadius: 10, backgroundColor: 'white', boxShadow: ' 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)', width: '-webkit-fill-available', padding: this.state.options.length ? '10px 20px' : 0, marginLeft: -10, marginTop: 10 }}>
                       {this.state.options ? this.state.options.map((x, i) => (
-                        <div onClick={(e) => { this.setState({ inputValue: e.currentTarget.innerText, options: [] }) }} key={i} style={{ display: 'flex', alignItems: 'center', color: 'grey' }}>
+                        <div onClick={(e) => { this.setState({ inputValue: e.currentTarget.innerText, options: [], cityCoordinates: x.center }) }} key={i} style={{ display: 'flex', alignItems: 'center', color: 'grey' }}>
                           <RoomIcon fontSize='large' color='inherit' style={{ paddingRight: 20 }} />
-                          <p>{x}</p>
+                          <p>{x.place_name}</p>
                         </div>
                       )) : null}
                     </div>
                   </div>
                 </div>
-                {this.state.inputClicked ? <CloseOutlinedIcon onClick={() => { this.setState({ options: [], inputValue: '' }) }} style={{ cursor: 'pointer', paddingRight: 15 }} fontSize='small' /> : null}
+                {this.state.inputClicked && this.state.inputValue.length ? <CloseOutlinedIcon onClick={() => { this.setState({ options: [], inputValue: '' }) }} style={{ cursor: 'pointer', paddingRight: 15 }} fontSize='small' /> : null}
               </Grid>
             </ClickAwayListener>
             <Grid item xs={this.state.tabValue === 1 ? 6 : 2} style={{ paddingLeft: 10, height: 70, alignItems: 'center', display: 'flex' }}>
@@ -196,15 +214,19 @@ class SearchBar extends Component {
             }
             <Grid item xs={1}>
               <div onClick={() => {
-                this.props.setCityName(this.state.inputValue);
-                this.props.getCoordinates(this.state.inputValue);
-                this.props.history.push('/searchResults');
+                if (this.isFormValid()) {
+                  this.props.setCity(this.state.inputValue, this.state.cityCoordinates);
+                  this.props.getCoordinates(this.state.inputValue);
+                  this.props.history.push('/searchResults');
+                } else {
+                  this.setState({ showSnackbar: true })
+                }
               }}
-                style={{ borderRadius: 5, backgroundColor: '#FF385C', color: 'white', textTransform: 'none', fontSize: 14, display: 'flex', alignItems: 'center', cursor: 'pointer', height: 'fit-content', padding: '10px 18px', justifyContent: 'center' }}>
+                style={{ borderRadius: 5, backgroundColor: !this.isFormValid() ? 'lightgrey' : '#FF385C', color: 'white', textTransform: 'none', fontSize: 14, display: 'flex', alignItems: 'center', cursor: !this.isFormValid() ? 'unset' : 'pointer', height: 'fit-content', padding: '10px 18px', justifyContent: 'center' }}>
                 <SearchIcon fontSize='small' style={{ color: 'white', paddingRight: 5 }} />
                 <Typography>
                   Search
-            </Typography>
+                </Typography>
               </div>
             </Grid>
           </Grid>
@@ -266,6 +288,13 @@ class SearchBar extends Component {
               </Grid>
             </Grid>
           </Dialog>
+          {this.state.showSnackbar ?
+            <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'center' }} open={this.state.showSnackbar} autoHideDuration={3000} onClose={() => { this.setState({ showSnackbar: false }) }}>
+              <Alert onClose={() => { this.setState({ showSnackbar: false }) }} severity="error">
+                Please fill out the required fields
+            </Alert>
+            </Snackbar> : null}
+
         </Grid>
       </Grid>
     )
@@ -276,4 +305,4 @@ const mapStateToProps = state => ({
 
 })
 
-export default connect(mapStateToProps, { setCityName, getCoordinates })(SearchBar)
+export default connect(mapStateToProps, { setCity, getCoordinates })(SearchBar)

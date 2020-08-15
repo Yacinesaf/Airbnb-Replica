@@ -24,8 +24,8 @@ class Navbar extends Component {
         <Grid container justify='center'>
           <Grid item xs={10}>
             <Grid container justify='space-between' style={{ padding: '15px 10px' }} alignItems='center'>
-              <Grid item xs={2}>
-                <img src={logoText} alt='logo' height={32} />
+              <Grid style={{cursor : 'pointer'}} onClick={()=> {this.props.history.push('/')}} item xs={2}>
+                <img  src={logoText} alt='logo' height={32} />
               </Grid>
               {this.props.location !== '/' ? null : this.props.scrolledDown ?
                 <Grid onClick={() => { window.scrollTo(0, 0) }} item xs={2}>

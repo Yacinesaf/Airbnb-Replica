@@ -21,6 +21,7 @@ export const getCoordinates = (city) => dispatch => {
     dispatch({ type: 'SET_FETCHING_ADRESSES', payload: false })
   })
 }
-export const setCityName = (city) => dispatch => {
-  dispatch({ type: 'SET_CITY_NAME', payload: city })
+export const setCity = (name, coordinates) => dispatch => {
+  dispatch({ type: 'SET_CITY_NAME', payload: name })
+  dispatch({ type: 'SET_CITY_CENTER', payload: coordinates })
 }
