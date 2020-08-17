@@ -22,12 +22,12 @@ class Navbar extends Component {
     return (
       <AppBar color={this.props.scrolledDown ? 'inherit' : 'transparent'} position="sticky" style={{ boxShadow: this.props.scrolledDown ? '0 2px 6px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.13)' : 'none' }}>
         <Grid container justify='center'>
-          <Grid item xs={10}>
-            <Grid container justify='space-between' style={{ padding: '15px 10px' }} alignItems='center'>
-              <Grid style={{cursor : 'pointer'}} onClick={()=> {this.props.history.push('/')}} item xs={2}>
-                <img  src={logoText} alt='logo' height={32} />
+          <Grid item xs={this.props.location.pathname === '/searchResults' ? 12 : 10} >
+            <Grid container justify='space-between' style={{  padding: this.props.location.pathname === '/searchResults' ? '15px 30px' : '15px 10px' }} alignItems='center'>
+              <Grid style={{ cursor: 'pointer' }} onClick={() => { this.props.history.push('/') }} item xs={2}>
+                <img src={logoText} alt='logo' height={32} />
               </Grid>
-              {this.props.location !== '/' ? null : this.props.scrolledDown ?
+              {this.props.location.pathname !== '/' ? null : this.props.scrolledDown ?
                 <Grid onClick={() => { window.scrollTo(0, 0) }} item xs={2}>
                   <Button fullWidth variant='outlined' style={{ textTransform: 'none', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderRadius: 25, padding: 5, paddingLeft: 15 }}>
                     Start your search

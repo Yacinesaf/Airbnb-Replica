@@ -4,6 +4,10 @@ import { Grid, Typography, Chip, Divider } from '@material-ui/core';
 import { connect } from 'react-redux'
 import { getResultsPhotos, } from '../reduxStore/actions'
 import HouseInfo from './HouseInfo';
+import MapOutlinedIcon from '@material-ui/icons/MapOutlined';
+import SearchIcon from '@material-ui/icons/Search';
+
+
 
 class SearchResultsMap extends Component {
   constructor(props) {
@@ -16,28 +20,49 @@ class SearchResultsMap extends Component {
     };
   }
   componentDidMount() {
-    const map = new mapboxgl.Map({
-      container: this.mapContainer,
-      style: 'mapbox://styles/mapbox/light-v10',
-      center: this.props.cityCoordinates ? [this.props.cityCoordinates[0], this.props.cityCoordinates[1]] : [this.state.lat, this.state.long],
-      zoom: this.state.zoom,
-      accessToken: 'pk.eyJ1IjoidHN1c2hpIiwiYSI6ImNrY3V1cDJoMTFzcTgzMm1mNHVmMXB5Y2cifQ.fftFTePNksxmgthYcL4LBw',
-      compact: true
-    });
-    new mapboxgl.Marker()
-      .setLngLat(this.props.cityCoordinates ? [this.props.cityCoordinates[0], this.props.cityCoordinates[1]] : [this.state.lat, this.state.long])
-      .addTo(map);
-      
+    if (this.state.showMap) {
+      const map = new mapboxgl.Map({
+        container: this.mapContainer,
+        style: 'mapbox://styles/mapbox/light-v10',
+        center: this.props.cityCoordinates ? [this.props.cityCoordinates[0], this.props.cityCoordinates[1]] : [this.state.lat, this.state.long],
+        zoom: this.state.zoom,
+        accessToken: 'pk.eyJ1IjoidHN1c2hpIiwiYSI6ImNrY3V1cDJoMTFzcTgzMm1mNHVmMXB5Y2cifQ.fftFTePNksxmgthYcL4LBw',
+        compact: true
+      });
+      new mapboxgl.Marker()
+        .setLngLat(this.props.cityCoordinates ? [this.props.cityCoordinates[0], this.props.cityCoordinates[1]] : [this.state.lat, this.state.long])
+        .addTo(map);
+    }
+
     this.props.getResultsPhotos()
+  }
+
+  createMap = () => {
+    if (!this.state.showMap) {
+      const map = new mapboxgl.Map({
+        container: this.mapContainer,
+        style: 'mapbox://styles/mapbox/light-v10',
+        center: this.props.cityCoordinates ? [this.props.cityCoordinates[0], this.props.cityCoordinates[1]] : [this.state.lat, this.state.long],
+        zoom: this.state.zoom,
+        accessToken: 'pk.eyJ1IjoidHN1c2hpIiwiYSI6ImNrY3V1cDJoMTFzcTgzMm1mNHVmMXB5Y2cifQ.fftFTePNksxmgthYcL4LBw',
+        compact: true
+      });
+      new mapboxgl.Marker()
+        .setLngLat(this.props.cityCoordinates ? [this.props.cityCoordinates[0], this.props.cityCoordinates[1]] : [this.state.lat, this.state.long])
+        .addTo(map);
+      return (
+        <Grid item xs={12} md={6} style={{ height: '100%' }}>
+          <div style={{ height: '100vh', position: "absolute", right: 0 }} ref={el => this.mapContainer = el} />
+        </Grid>
+      )
+    }
   }
 
   render() {
     return (
       <Grid container justify='center' style={{ minHeight: '100vh', paddingBottom: 56 }}>
         {this.state.showMap ?
-          <Grid item xs={12} md={6} style={{ height: '100%' }}>
-            <div style={{ height: '100vh', position: "absolute", right: 0 }} ref={el => this.mapContainer = el} />
-          </Grid>
+          null
           :
           <Grid item xs={12} md={6} style={{ padding: 30 }}>
             <Typography variant='subtitle2'>300+ stays</Typography>
@@ -67,10 +92,17 @@ class SearchResultsMap extends Component {
         }
         {this.props.smDown ? null :
           <Grid item xs={12} md={6} style={{ height: 'calc(100vh - 76px)' }}>
-            <div style={{ height: 'calc(100vh - 76px)', position: "fixed", right: 0, width: '50%', overflow : 'hidden' }} ref={el => this.mapContainer = el} />
+            <div style={{ height: 'calc(100vh - 76px)', position: "fixed", right: 0, width: '50%', overflow: 'hidden' }} ref={el => this.mapContainer = el} />
           </Grid>
         }
-
+        {this.props.smDown ?
+          <div onClick={() => { this.setState({ showMap: !this.state.showMap }); this.createMap() }} style={{ position: 'fixed', bottom: 100 }}>
+            <div style={{ padding: '10px 16px', backgroundColor: 'rgb(34, 34, 34)', display: 'flex', justifyContent: 'center', alignItems: 'center', width: 'fit-content', borderRadius: 25 }}>
+              {this.state.showMap ? <SearchIcon style={{ color: 'white', paddingRight: 5 }} /> : <MapOutlinedIcon style={{ color: 'white', paddingRight: 5 }} />}
+              <Typography style={{ color: 'white', fontWeight: 600 }}>{this.state.showMap ? 'Results' : 'Map'}</Typography>
+            </div>
+          </div>
+          : null}
       </Grid>
     )
   }
