@@ -10,7 +10,7 @@ import {
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 import { getLocations } from '../services/apiEndpoints'
-import { setCity, getCoordinates } from '../reduxStore/actions.js'
+import { setCity } from '../reduxStore/actions.js'
 import RoomIcon from '@material-ui/icons/Room';
 import { connect } from 'react-redux'
 import MuiAlert from '@material-ui/lab/Alert';
@@ -93,16 +93,21 @@ class SearchBar extends Component {
   }
 
   isFormValid = () => {
-    // if (this.state.inputValue && this.state.guestsAddition > 0 && this.state.checkoutDate && this.state.checkinDate) {
-    //   return true
-    // } else {
-    //   return false
-    // }
-    if (this.state.inputValue) {
-      return true
+    if (this.state.tabValue === 1) {
+      if (this.state.inputValue && this.state.checkinDate) {
+        return true
+      } else {
+        return false
+      }
     } else {
-      return false
+      if (this.state.inputValue && this.state.guestsAddition > 0 && this.state.checkoutDate && this.state.checkinDate) {
+        return true
+      } else {
+        return false
+      }
     }
+
+
   }
 
 
@@ -216,7 +221,6 @@ class SearchBar extends Component {
               <div onClick={() => {
                 if (this.isFormValid()) {
                   this.props.setCity(this.state.inputValue, this.state.cityCoordinates);
-                  this.props.getCoordinates(this.state.inputValue);
                   this.props.history.push('/searchResults');
                 } else {
                   this.setState({ showSnackbar: true })
@@ -305,4 +309,4 @@ const mapStateToProps = state => ({
 
 })
 
-export default connect(mapStateToProps, { setCity, getCoordinates })(SearchBar)
+export default connect(mapStateToProps, { setCity })(SearchBar)

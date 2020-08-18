@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux'
 import categoriesPhotos from './categoriesPhotos'
 import resultsPhotos from './resultsPhotos'
-import adressesCoordinates from './adressesCoordinates'
+import searchedCityInfo from './searchedCityInfo'
 
 export default combineReducers({
   categoriesPhotos,
   resultsPhotos,
-  adressesCoordinates,
+  searchedCityInfo,
 })

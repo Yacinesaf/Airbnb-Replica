@@ -4,7 +4,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import { getLocations } from '../services/apiEndpoints'
 import RoomIcon from '@material-ui/icons/Room';
 import { connect } from 'react-redux'
-import { setCity, getCoordinates } from '../reduxStore/actions.js'
+import { setCity } from '../reduxStore/actions.js'
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -121,4 +121,4 @@ const mapStateToProps = state => ({
 
 })
 
-export default connect(mapStateToProps, { setCity, getCoordinates })(SearchbarMobile)
+export default connect(mapStateToProps, { setCity })(SearchbarMobile)
