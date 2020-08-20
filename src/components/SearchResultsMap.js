@@ -30,7 +30,7 @@ class SearchResultsMap extends Component {
       this.setState({ coordinates: this.generateCoordinates(this.props.cityCoordinates, 5) });
       this.props.getResultsPhotos()
     } else {
-this.props.history.push('/')
+      this.props.history.push('/')
     }
   }
 
@@ -43,21 +43,20 @@ this.props.history.push('/')
   generateCoordinates(center, n) {
     return [...Array(n).keys()].map(x => {
       let p1 = this.getRandomNum(0.5) / 100
-      console.log("SearchResultsMap -> generateCoordinates -> p1", p1)
       let p2 = this.getRandomNum(0.5) / 100
-      console.log("SearchResultsMap -> generateCoordinates -> p2", p2)
       return [center[0] * (1 + p1), center[1] * (1 + p2)]
     })
   }
 
   render() {
+    console.log(this.props.cityCoordinates);
     return (
       <div>
         {this.props.cityCoordinates ?
           <Grid container justify='center' style={{ minHeight: '100vh', paddingBottom: 56 }}>
             {this.state.showMap ?
               <Grid item xs={12} md={6} >
-                <ReactMapGL style={{ position: 'fixed', right: 0 }} mapboxApiAccessToken='pk.eyJ1IjoidHN1c2hpIiwiYSI6ImNrY3V1cDJoMTFzcTgzMm1mNHVmMXB5Y2cifQ.fftFTePNksxmgthYcL4LBw' {...this.state.viewport} onViewportChange={(viewport) => this.setState({ viewport })}>
+                <ReactMapGL style={{ position: 'fixed' }} mapboxApiAccessToken='pk.eyJ1IjoidHN1c2hpIiwiYSI6ImNrY3V1cDJoMTFzcTgzMm1mNHVmMXB5Y2cifQ.fftFTePNksxmgthYcL4LBw' {...this.state.viewport} onViewportChange={(viewport) => this.setState({ viewport })}>
                   {this.state.coordinates.map((x, i) => (
                     <Marker key={i} latitude={x[1]} longitude={x[0]}>
                       <RoomIcon fontSize='large' color='primary' />
@@ -95,11 +94,11 @@ this.props.history.push('/')
             {this.props.smDown ? null :
               <Grid item xs={12} md={6} >
                 <ReactMapGL style={{ position: 'fixed', right: 0 }} mapboxApiAccessToken='pk.eyJ1IjoidHN1c2hpIiwiYSI6ImNrY3V1cDJoMTFzcTgzMm1mNHVmMXB5Y2cifQ.fftFTePNksxmgthYcL4LBw' {...this.state.viewport} onViewportChange={(viewport) => this.setState({ viewport })}>
-                  {this.state.coordinates.map((x, i) => (
+                  {this.state.coordinates ? this.state.coordinates.map((x, i) => (
                     <Marker key={i} latitude={x[1]} longitude={x[0]}>
                       <RoomIcon fontSize='large' color='primary' />
                     </Marker>
-                  ))}
+                  )) : null}
                 </ReactMapGL>
               </Grid>
             }

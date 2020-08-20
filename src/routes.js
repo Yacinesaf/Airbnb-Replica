@@ -31,7 +31,7 @@ function Routes() {
 
   return (
     <MuiThemeProvider theme={themee}>
-      {smDown ? <NavbarMobile history={history} /> : <Navbar history={history} scrolledDown={scrolledDown} location={location} />}
+      {smDown ? <NavbarMobile history={history} location={location} /> : <Navbar history={history} scrolledDown={scrolledDown} location={location} />}
       <Route exact path='/' component={LandingPage} />
       <Route exact path='/searchResults' render={(props) => <SearchResultsMap {...props} smDown={smDown} />} />
     </MuiThemeProvider>
